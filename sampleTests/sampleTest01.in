@@ -1,0 +1,20 @@
+create s1
+add s1 robot
+add s1 fortune
+add s1 blow
+add s1 robot
+add s1 Robot
+print s1
+search s1 robot
+search s1 dock
+add s1 blow
+add s1 blow
+add s1 fortune
+searchByInstance s1 2
+removeOne s1 fortune
+print s1
+create s2
+list
+add s2 robot
+print s2
+quit

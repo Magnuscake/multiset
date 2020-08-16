@@ -1,0 +1,21 @@
+# print s1
+robot:2
+fortune:1
+blow:1
+Robot:1
+# search s1 robot
+robot 2
+# search s1 dock
+dock not found
+# searchByInstance s1 2
+robot,fortune
+# print s1
+blow:3
+robot:2
+fortune:1
+Robot:1
+# list
+s1
+s2
+# print s2
+robot:1

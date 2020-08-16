@@ -1,0 +1,31 @@
+# print sA
+a:3
+b:2
+c:1
+# print sB
+cc:1
+a:1
+c:1
+d:1
+# contains sB a
+a is in multiset
+# contains sB b
+b is not in multiset
+# printRange sB a c
+a:1
+c:1
+# print sI
+a:1
+c:1
+# print sU
+a:4
+b:2
+c:2
+cc:1
+d:1
+# print sAB
+a:2
+b:2
+# print sBA
+cc:1
+d:1

@@ -1,0 +1,26 @@
+create sA
+add sA c
+add sA a
+add sA a
+add sA a
+add sA b
+add sA b
+print sA
+create sB
+add sB d
+add sB a
+add sB c
+add sB cc
+print sB
+contains sB a
+contains sB b
+printRange sB a c
+intersect sA sB sI
+print sI
+union sA sB sU
+print sU
+difference sA sB sAB
+print sAB
+difference sB sA sBA
+print sBA
+quit
