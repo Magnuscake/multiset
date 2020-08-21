@@ -1,0 +1,13 @@
+create s1
+add s1 cat
+add s1 dog
+create s2
+add s2 frog
+add s2 frog
+add s1 cat
+add s2 dog
+print s1
+print s2
+intersect s1 s2 s3
+print s3
+quit

@@ -231,7 +231,23 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         Node multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
 
         // Common item that exists in both multisets
-        
+        while (multiset1CurrNode != null) {
+            while (multiset2CurrNode != null) {
+                if ((multiset1CurrNode.getItem()).compareTo(multiset2CurrNode.getItem()) == 0) {
+                    int totalInstances = multiset1CurrNode.getInstances() + multiset2CurrNode.getInstances();
+
+                    for (int i = 1; i <= totalInstances; i++) {
+                        intersectedMultiset.add(multiset1CurrNode.getItem());
+                    }
+
+                    multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
+                    break;
+                }
+                multiset2CurrNode = multiset2CurrNode.getNextNode();
+
+            }
+            multiset1CurrNode = multiset1CurrNode.getNextNode();
+        }
         return intersectedMultiset;
     } // end of intersect()
 
