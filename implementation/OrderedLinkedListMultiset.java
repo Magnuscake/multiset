@@ -185,16 +185,38 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             }
             currNode = currNode.getNextNode();
         }
-        // Placeholder, please update.
         return new String();
     } // end of printRange()
 
 
     @Override
 	public RmitMultiset union(RmitMultiset other) {
+        RmitMultiset unionedLinkedList = new OrderedLinkedListMultiset();
 
-        // Placeholder, please update.
-        return null;
+        // First multiset
+        Node multiset1CurrNode = head;
+        // Second multiset
+        OrderedLinkedListMultiset otherToLinkedListMultiset = (OrderedLinkedListMultiset) other;
+        Node multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
+
+        if (multiset1CurrNode == null && multiset2CurrNode == null) {
+            return null;
+        }
+
+        while (multiset1CurrNode != null) {
+            System.out.println(multiset1CurrNode.getItem());
+            unionedLinkedList.add(multiset1CurrNode.getItem());
+
+            multiset1CurrNode =  multiset1CurrNode.getNextNode();
+        }
+
+        while (multiset2CurrNode != null) {
+            System.out.println("Here 2");
+            unionedLinkedList.add(multiset2CurrNode.getItem());
+
+            multiset2CurrNode =  multiset2CurrNode.getNextNode();
+        }
+        return unionedLinkedList;
     } // end of union()
 
 
@@ -213,36 +235,47 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         return null;
     } // end of difference()
 
+    /**
+     * Return initial node of the Multset
+     *
+     * @param orderedLinkedListMultiset Multiset to get initial node
+     */
+    public Node getInitialNode(OrderedLinkedListMultiset orderedLinkedListMultiset) {
+        Node initialNode = orderedLinkedListMultiset.head;
+        return initialNode;
+    }
+
+    class Node {
+        protected String _item;
+        private Node _nextNode;
+        private int _instances;
+
+        public Node(String item) {
+            _item = item;
+            _nextNode = null;
+            _instances = 1;
+        }
+
+        public String getItem() {
+            return _item;
+        }
+
+        public Node getNextNode() {
+            return _nextNode;
+        }
+
+        public int getInstances() {
+            return _instances;
+        }
+
+        public void setNextNode(Node nextNode) {
+            _nextNode = nextNode;
+        }
+
+        public void setInstances(int instances) {
+            _instances = instances;
+        }
+    }
 } // end of class OrderedLinkedListMultiset
 
-class Node {
-    protected String _item;
-    private Node _nextNode;
-    private int _instances;
 
-    public Node(String item) {
-        _item = item;
-        _nextNode = null;
-        _instances = 1;
-    }
-
-    public String getItem() {
-        return _item;
-    }
-
-    public Node getNextNode() {
-        return _nextNode;
-    }
-
-    public int getInstances() {
-        return _instances;
-    }
-
-    public void setNextNode(Node nextNode) {
-        _nextNode = nextNode;
-    }
-
-    public void setInstances(int instances) {
-        _instances = instances;
-    }
-}
