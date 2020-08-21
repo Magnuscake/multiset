@@ -64,10 +64,9 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                 newNode.setNextNode(head);
                 head = newNode;
             }
-            length++;
+        }
+        length++;
 
-            
-        } 
     } // end of add()
 
 
@@ -191,6 +190,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public RmitMultiset union(RmitMultiset other) {
+        // New multiset to be returned
         RmitMultiset unionedLinkedList = new OrderedLinkedListMultiset();
 
         // First multiset
@@ -204,16 +204,16 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         }
 
         while (multiset1CurrNode != null) {
-            System.out.println(multiset1CurrNode.getItem());
-            unionedLinkedList.add(multiset1CurrNode.getItem());
-
+            for (int i = 1; i <= multiset1CurrNode.getInstances(); i++) {
+                unionedLinkedList.add(multiset1CurrNode.getItem());
+            }
             multiset1CurrNode =  multiset1CurrNode.getNextNode();
         }
 
         while (multiset2CurrNode != null) {
-            System.out.println("Here 2");
-            unionedLinkedList.add(multiset2CurrNode.getItem());
-
+            for (int i = 1; i <= multiset2CurrNode.getInstances(); i++) {
+                unionedLinkedList.add(multiset2CurrNode.getItem());
+            }
             multiset2CurrNode =  multiset2CurrNode.getNextNode();
         }
         return unionedLinkedList;
@@ -222,9 +222,17 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public RmitMultiset intersect(RmitMultiset other) {
+        OrderedLinkedListMultiset intersectedMultiset = new OrderedLinkedListMultiset();
 
-        // Placeholder, please update.
-        return null;
+        // First multiset
+        Node multiset1CurrNode = head;
+        // Second multiset
+        OrderedLinkedListMultiset otherToLinkedListMultiset = (OrderedLinkedListMultiset) other;
+        Node multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
+
+        // Common item that exists in both multisets
+        
+        return intersectedMultiset;
     } // end of intersect()
 
 
@@ -236,16 +244,17 @@ public class OrderedLinkedListMultiset extends RmitMultiset
     } // end of difference()
 
     /**
-     * Return initial node of the Multset
+     * Return initial node of a multset
      *
-     * @param orderedLinkedListMultiset Multiset to get initial node
+     * @param orderedLinkedListMultiset Multiset to get initial node from
      */
     public Node getInitialNode(OrderedLinkedListMultiset orderedLinkedListMultiset) {
         Node initialNode = orderedLinkedListMultiset.head;
         return initialNode;
-    }
+    } // end of getInitialNode()
 
-    class Node {
+    
+        class Node {
         protected String _item;
         private Node _nextNode;
         private int _instances;
