@@ -164,7 +164,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         StringBuffer strList = new StringBuffer();
 
         while (currNode != null) {
-            strList.append(currNode.getItem() + ":" + currNode.getInstances() + "\n");
+            strList.insert(0, currNode.getItem() + ":" + currNode.getInstances() + "\n");
             currNode = currNode.getNextNode();
         }
 
