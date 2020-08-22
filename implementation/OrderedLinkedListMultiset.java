@@ -48,6 +48,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                             } else head = nextNode;
                             currNode.setNextNode(nextNode.getNextNode());
                             nextNode.setNextNode(currNode);
+
                         } else break;
 
                         prevNode = nextNode;
@@ -115,13 +116,12 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public void removeOne(String item) {
-        // TODO: order element as and when they are removed
         if (head == null) {
             return;
         }
-
-        Node currNode = head;
+        // Store node before the prev node
         Node prevNode = null;
+        Node currNode = head;
 
         while (currNode != null) {
             if (currNode.getItem().compareTo(item) == 0) {
@@ -140,19 +140,30 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                     }
 
                     currNode = null;
+                    length--;
+
                 } else {
-                    while (currNode != null) {
-                        // Order list logic
+                    // while (prevNode != null) {
+                    if (currNode.getInstances() < prevNode.getInstances()) {
+                        String currItem = currNode.getItem();
+                        int currInstances = currNode.getInstances();
+
+                        prevNode.setNextNode(currNode.getNextNode());
+                        currNode = null;
+
+                        for (int i = 1; i <= currInstances; i++) {
+                            this.add(currItem);
+                        }
+
                         break;
                     }
+                    //}
                 }
             }
 
             prevNode = currNode;
             currNode = currNode.getNextNode();
         }
-        
-        // Implement me!
     } // end of removeOne()
 
 
@@ -234,12 +245,14 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         while (multiset1CurrNode != null) {
             while (multiset2CurrNode != null) {
                 if ((multiset1CurrNode.getItem()).compareTo(multiset2CurrNode.getItem()) == 0) {
+                    // Combine instances from first and second multisets
                     int totalInstances = multiset1CurrNode.getInstances() + multiset2CurrNode.getInstances();
 
                     for (int i = 1; i <= totalInstances; i++) {
                         intersectedMultiset.add(multiset1CurrNode.getItem());
                     }
 
+                    // Reset second multiset iteration
                     multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
                     break;
                 }
@@ -251,11 +264,29 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         return intersectedMultiset;
     } // end of intersect()
 
-
+    // TODO: proper implementation
     @Override
 	public RmitMultiset difference(RmitMultiset other) {
+        RmitMultiset diffMultiset = new OrderedLinkedListMultiset();
 
-        // Placeholder, please update.
+        // First multiset
+        Node multiset1CurrNode = head;
+        // Second multiset
+        OrderedLinkedListMultiset otherToLinkedListMultiset = (OrderedLinkedListMultiset) other;
+        Node multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
+
+        while (multiset1CurrNode != null) {
+            while (multiset2CurrNode != null) {
+                if (multiset1CurrNode.getItem().compareTo(multiset2CurrNode.getItem()) != 0) {
+                   for (int i = 1; i <= multiset1CurrNode.getInstances(); i++) {
+                       diffMultiset.add(multiset1CurrNode.getItem());
+                   }
+                   break;
+                }
+                multiset2CurrNode = multiset2CurrNode.getNextNode();
+            }
+            multiset1CurrNode = multiset1CurrNode.getNextNode();
+        }
         return null;
     } // end of difference()
 

@@ -1,13 +1,20 @@
 create s1
 add s1 cat
 add s1 dog
-create s2
-add s2 frog
-add s2 frog
 add s1 cat
-add s2 dog
+add s1 frog
+add s1 cat
+add s1 dog
+add s1 dance
+add s1 dance
+add s1 dance
+add s1 synth
+add s1 synth
+add s1 cat
+add s1 fish
 print s1
-print s2
-intersect s1 s2 s3
-print s3
+removeOne s1 cat
+print s1
+removeOne s1 cat
+print s1
 quit
