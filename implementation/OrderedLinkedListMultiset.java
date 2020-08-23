@@ -135,29 +135,27 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                     } 
                     else if (currNode == head) {
                         head = currNode.getNextNode();
-                        currNode = null;
-                        return;
                     }
-
                     currNode = null;
                     length--;
 
                 } else {
-                    // while (prevNode != null) {
-                    if (currNode.getInstances() < prevNode.getInstances()) {
-                        String currItem = currNode.getItem();
-                        int currInstances = currNode.getInstances();
-
+                    if (prevNode!= null && currNode.getInstances() < prevNode.getInstances()) {
                         prevNode.setNextNode(currNode.getNextNode());
-                        currNode = null;
 
-                        for (int i = 1; i <= currInstances; i++) {
-                            this.add(currItem);
+                        Node comp_currNode = head;
+                        Node comp_prevNode = null;
+                        
+                        while (comp_currNode != null) {
+                            if (currNode.getInstances() < comp_currNode.getInstances()) {
+                                currNode.setNextNode(comp_currNode);
+                                comp_prevNode.setNextNode(currNode);
+                                return;
+                            }
+                            comp_prevNode = comp_currNode;
+                            comp_currNode = comp_currNode.getNextNode();
                         }
-
-                        break;
                     }
-                    //}
                 }
             }
 
@@ -169,7 +167,6 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public String print() {
-
         Node currNode = head;
 
         StringBuffer strList = new StringBuffer();
@@ -300,8 +297,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         return initialNode;
     } // end of getInitialNode()
 
-    
-        class Node {
+    class Node {
         protected String _item;
         private Node _nextNode;
         private int _instances;
