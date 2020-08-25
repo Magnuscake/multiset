@@ -27,44 +27,41 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
         if (head == null) {
             head = newNode;
+            return;
+        }            
 
-        } else {
-            Node prevNode = null;
-            Node currNode = head;
+        Node currNode = head;
 
-            boolean createNewItem = true;
+        while (currNode != null) {
+            if (currNode.getItem().compareTo(item) == 0) {
+                currNode.setInstances(currNode.getInstances() + 1); 
+                return;
+            }
+            currNode = currNode.getNextNode();
+        }
+        // Attach new node to head
+        if (newNode.getItem().compareTo(head.getItem()) < 0) {
+            newNode.setNextNode(head);
+            head = newNode;
+            length++;
+            return;
+        }
 
-            while (currNode != null) {
-                if (currNode.getItem().equals(item)) {
-                    currNode.setInstances(currNode.getInstances() + 1); 
-                    
-                    Node nextNode = currNode.getNextNode();
-                    while (nextNode != null) {
-                        if (currNode.getInstances() > nextNode.getInstances()) {
-                            // swap currNode and nextNode
-                            if (prevNode != null) {
-                                prevNode.setNextNode(nextNode);
-                                // Specify the new head
-                            } else head = nextNode;
-                            currNode.setNextNode(nextNode.getNextNode());
-                            nextNode.setNextNode(currNode);
-
-                        } else break;
-
-                        prevNode = nextNode;
-                        nextNode = currNode.getNextNode();
-                    }
-                    createNewItem = false;
-               }
-
-               prevNode = currNode;
-               currNode = currNode.getNextNode();
+        currNode = head;
+        Node nextNode = currNode.getNextNode();
+        while (currNode != null) {
+            if (currNode.getNextNode() == null) {
+                currNode.setNextNode(newNode);
+                break;
+            }
+            else if (newNode.getItem().compareTo(nextNode.getItem()) < 0) {
+                currNode.setNextNode(newNode);
+                newNode.setNextNode(nextNode);
+                break;
             }
 
-            if (createNewItem) {
-                newNode.setNextNode(head);
-                head = newNode;
-            }
+            currNode = nextNode;
+            nextNode = currNode.getNextNode();
         }
         length++;
 
@@ -81,7 +78,6 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
             currNode = currNode.getNextNode();
         }
-        
         return searchFailed;
     } // end of search()
 
@@ -115,52 +111,35 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
 
     @Override
-	public void removeOne(String item) {
-        if (head == null) {
-            return;
-        }
+    public void removeOne(String item) {
         // Store node before the prev node
-        Node prevNode = null;
         Node currNode = head;
 
-        while (currNode != null) {
-            if (currNode.getItem().compareTo(item) == 0) {
-                currNode.setInstances(currNode.getInstances() - 1);
-
-                // delete item when count is 0
-                if (currNode.getInstances() == 0) {
-                    // length of 1 means only head is remaining
-                    if (length == 1) {
-                        head = null;
-                    } 
-                    else if (currNode == head) {
-                        head = currNode.getNextNode();
-                    }
-                    currNode = null;
-                    length--;
-
-                } else {
-                    if (prevNode!= null && currNode.getInstances() < prevNode.getInstances()) {
-                        prevNode.setNextNode(currNode.getNextNode());
-
-                        Node comp_currNode = head;
-                        Node comp_prevNode = null;
-                        
-                        while (comp_currNode != null) {
-                            if (currNode.getInstances() < comp_currNode.getInstances()) {
-                                currNode.setNextNode(comp_currNode);
-                                comp_prevNode.setNextNode(currNode);
-                                return;
-                            }
-                            comp_prevNode = comp_currNode;
-                            comp_currNode = comp_currNode.getNextNode();
-                        }
-                    }
-                }
+        // Current item is being reffered to the head node
+        // Check if head node is the same as the corresponding item
+        if (currNode.getItem().compareTo(item) == 0) {
+            currNode.setInstances(currNode.getInstances() - 1);
+            if (head.getInstances() == 0) {
+                head = currNode.getNextNode();
+                length--;
             }
+            return;
+        }
 
-            prevNode = currNode;
-            currNode = currNode.getNextNode();
+        Node nextNode = currNode.getNextNode();
+        while (nextNode != null) {
+            if (nextNode.getItem().compareTo(item) == 0) {
+                nextNode.setInstances(nextNode.getInstances() - 1);
+
+                // Delete item when count is 0
+                if (nextNode.getInstances() == 0) {
+                    currNode.setNextNode(nextNode.getNextNode());
+                    length--;
+                }
+                break;
+            }
+            currNode = nextNode;
+            nextNode = currNode.getNextNode();
         }
     } // end of removeOne()
 

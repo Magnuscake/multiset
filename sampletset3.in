@@ -1,0 +1,19 @@
+create s1
+add s1 pizza
+add s1 tacos
+add s1 pizza
+add s1 fish
+add s1 fish
+add s1 pizza
+add s1 dog
+print s1
+removeOne s1 pizza
+print s1
+removeOne s1 tacos
+print s1
+removeOne s1 fish
+print s1
+removeOne s1 dog
+print s1
+quit
+

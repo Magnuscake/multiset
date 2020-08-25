@@ -15,21 +15,6 @@ public class ArrayMultiset extends RmitMultiset
     @Override
 	public void add(String elem) {
         // Implement me!
-        // If array is empty
-            // Add element
-            // Update instance count
-        // else
-            // loop through the array and see if element exists
-            // if element exists
-                // update the instance count
-            // else
-                // create new element with count 1
-        if (array == null) {
-
-        }
-          
-        // this is just a test
-        // to test the indention
     } // end of add()
 
 
