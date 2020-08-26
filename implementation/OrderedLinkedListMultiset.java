@@ -39,7 +39,8 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             }
             currNode = currNode.getNextNode();
         }
-        // Attach new node to head
+        // Attach new node to head if corresponding item is the same
+        // as the head node
         if (newNode.getItem().compareTo(head.getItem()) < 0) {
             newNode.setNextNode(head);
             head = newNode;
@@ -50,7 +51,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         currNode = head;
         Node nextNode = currNode.getNextNode();
         while (currNode != null) {
-            if (currNode.getNextNode() == null) {
+            if (nextNode == null) {
                 currNode.setNextNode(newNode);
                 break;
             }
@@ -112,20 +113,18 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
     public void removeOne(String item) {
-        // Store node before the prev node
-        Node currNode = head;
 
-        // Current item is being reffered to the head node
         // Check if head node is the same as the corresponding item
-        if (currNode.getItem().compareTo(item) == 0) {
-            currNode.setInstances(currNode.getInstances() - 1);
+        if (head.getItem().compareTo(item) == 0) {
+            head.setInstances(head.getInstances() - 1);
             if (head.getInstances() == 0) {
-                head = currNode.getNextNode();
+                head = head.getNextNode();
                 length--;
             }
             return;
         }
 
+        Node currNode = head;
         Node nextNode = currNode.getNextNode();
         while (nextNode != null) {
             if (nextNode.getItem().compareTo(item) == 0) {
@@ -148,14 +147,14 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 	public String print() {
         Node currNode = head;
 
-        StringBuffer strList = new StringBuffer();
+        StringBuffer strMultiset = new StringBuffer();
 
         while (currNode != null) {
-            strList.insert(0, currNode.getItem() + ":" + currNode.getInstances() + "\n");
+            strMultiset.insert(0, currNode.getItem() + ":" + currNode.getInstances() + "\n");
             currNode = currNode.getNextNode();
         }
 
-        return strList.toString();
+        return new String(strMultiset);
     } // end of OrderedPrint
 
 
@@ -178,31 +177,35 @@ public class OrderedLinkedListMultiset extends RmitMultiset
     @Override
 	public RmitMultiset union(RmitMultiset other) {
         // New multiset to be returned
-        RmitMultiset unionedLinkedList = new OrderedLinkedListMultiset();
+        OrderedLinkedListMultiset unionedLinkedList = new OrderedLinkedListMultiset();
 
-        // First multiset
+        // First multiset to union
         Node multiset1CurrNode = head;
-        // Second multiset
+        // Second multiset to union
         OrderedLinkedListMultiset otherToLinkedListMultiset = (OrderedLinkedListMultiset) other;
         Node multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
 
         if (multiset1CurrNode == null && multiset2CurrNode == null) {
             return null;
         }
+        // To store the current node in the multiset
+        Node newNode;
 
         while (multiset1CurrNode != null) {
-            for (int i = 1; i <= multiset1CurrNode.getInstances(); i++) {
-                unionedLinkedList.add(multiset1CurrNode.getItem());
-            }
-            multiset1CurrNode =  multiset1CurrNode.getNextNode();
+            newNode = new Node(multiset1CurrNode.getItem(), multiset1CurrNode.getInstances());
+            
+            addNewNode(unionedLinkedList, newNode);
+            multiset1CurrNode = multiset1CurrNode.getNextNode();
         }
 
         while (multiset2CurrNode != null) {
-            for (int i = 1; i <= multiset2CurrNode.getInstances(); i++) {
-                unionedLinkedList.add(multiset2CurrNode.getItem());
-            }
-            multiset2CurrNode =  multiset2CurrNode.getNextNode();
+            newNode = new Node(multiset2CurrNode.getItem(), multiset2CurrNode.getInstances());
+            
+            addNewNode(unionedLinkedList, newNode);
+            multiset2CurrNode = multiset2CurrNode.getNextNode();
+
         }
+
         return unionedLinkedList;
     } // end of union()
 
@@ -222,12 +225,11 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             while (multiset2CurrNode != null) {
                 if ((multiset1CurrNode.getItem()).compareTo(multiset2CurrNode.getItem()) == 0) {
                     // Combine instances from first and second multisets
-                    int totalInstances = multiset1CurrNode.getInstances() + multiset2CurrNode.getInstances();
+                    int totalInstances = Math.min(multiset1CurrNode.getInstances(), multiset2CurrNode.getInstances());
 
-                    for (int i = 1; i <= totalInstances; i++) {
-                        intersectedMultiset.add(multiset1CurrNode.getItem());
-                    }
+                    Node newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
 
+                    addNewNode(intersectedMultiset, newNode);
                     // Reset second multiset iteration
                     multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
                     break;
@@ -240,7 +242,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         return intersectedMultiset;
     } // end of intersect()
 
-    // TODO: proper implementation
+
     @Override
 	public RmitMultiset difference(RmitMultiset other) {
         RmitMultiset diffMultiset = new OrderedLinkedListMultiset();
@@ -276,6 +278,21 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         return initialNode;
     } // end of getInitialNode()
 
+
+    /**
+     * Add a node with given item and instances 
+     *
+     * @param multiset Multiset to add node to 
+     * @param newNode node to add to the multiset
+     */
+    public void addNewNode(OrderedLinkedListMultiset orderedLinkedListMultiset, Node node) {
+
+        for (int i = 1; i <= node.getInstances(); i++) {
+            orderedLinkedListMultiset.add(node.getItem());
+        }
+    } // end of addNewNode()
+
+
     class Node {
         protected String _item;
         private Node _nextNode;
@@ -286,6 +303,13 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             _nextNode = null;
             _instances = 1;
         }
+
+        public Node(String item, int instances) {
+            _item = item;
+            _nextNode = null;
+            _instances = instances;
+        }
+
 
         public String getItem() {
             return _item;
