@@ -230,18 +230,12 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                     Node newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
 
                     addNewNode(intersectedMultiset, newNode);
-                    // Reset second multiset iteration
-                    multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
                      break;
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
 
             }
-            // Check if second multiset has reached the end
-            if (multiset2CurrNode == null) {
-                multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
-            }
-
+            multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
             multiset1CurrNode = multiset1CurrNode.getNextNode();
         }
         return intersectedMultiset;
@@ -260,22 +254,25 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
         while (multiset1CurrNode != null) {
             while (multiset2CurrNode != null) {
-                if (multiset1CurrNode.getItem().compareTo(multiset2CurrNode.getItem()) != 0) {
+                if (multiset1CurrNode.getItem().compareTo(multiset2CurrNode.getItem()) == 0) {
                     Node newNode; 
                     int totalInstances = multiset1CurrNode.getInstances() - multiset2CurrNode.getInstances();
+                        
                     if (totalInstances > 0) {
                         newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
                         addNewNode(diffMultiset, newNode);
                     }
                    break;
-                } else {
-                    addNewNode(diffMultiset,multiset1CurrNode);
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
             }
+            if (multiset2CurrNode == null) {
+                addNewNode(diffMultiset, multiset1CurrNode);
+            }
+            multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
             multiset1CurrNode = multiset1CurrNode.getNextNode();
         }
-        return null;
+        return diffMultiset;
     } // end of difference()
 
     /**
