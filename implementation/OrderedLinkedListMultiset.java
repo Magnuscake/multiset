@@ -232,11 +232,16 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                     addNewNode(intersectedMultiset, newNode);
                     // Reset second multiset iteration
                     multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
-                    break;
+                     break;
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
 
             }
+            // Check if second multiset has reached the end
+            if (multiset2CurrNode == null) {
+                multiset2CurrNode = getInitialNode(otherToLinkedListMultiset);
+            }
+
             multiset1CurrNode = multiset1CurrNode.getNextNode();
         }
         return intersectedMultiset;
@@ -245,7 +250,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public RmitMultiset difference(RmitMultiset other) {
-        RmitMultiset diffMultiset = new OrderedLinkedListMultiset();
+        OrderedLinkedListMultiset diffMultiset = new OrderedLinkedListMultiset();
 
         // First multiset
         Node multiset1CurrNode = head;
@@ -256,10 +261,15 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         while (multiset1CurrNode != null) {
             while (multiset2CurrNode != null) {
                 if (multiset1CurrNode.getItem().compareTo(multiset2CurrNode.getItem()) != 0) {
-                   for (int i = 1; i <= multiset1CurrNode.getInstances(); i++) {
-                       diffMultiset.add(multiset1CurrNode.getItem());
-                   }
+                    Node newNode; 
+                    int totalInstances = multiset1CurrNode.getInstances() - multiset2CurrNode.getInstances();
+                    if (totalInstances > 0) {
+                        newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
+                        addNewNode(diffMultiset, newNode);
+                    }
                    break;
+                } else {
+                    addNewNode(diffMultiset,multiset1CurrNode);
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
             }
