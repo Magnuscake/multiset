@@ -147,9 +147,9 @@ public class DualLinkedListMultiset extends RmitMultiset
             }
 
             /**
-             * Since the multiset is already ordered, we can break once we find all items with specified instances
+             * Since the multiset is already ordered, we can
+             * break once we find all items with specified instances
              * */
-
             if (currNode.getNextNode() != null && currNode.getNextNode().getInstances() < instanceCount) break;
 
             currNode = currNode.getNextNode();
