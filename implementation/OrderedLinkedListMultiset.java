@@ -91,8 +91,15 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
         while (currNode != null) {
             if (currNode.getInstances() == instanceCount) {
-                matchItems.add(currNode.getItem());
+                matchItems.add(0, currNode.getItem());
             }
+
+            /**
+             * Since the multiset is already ordered, we can
+             * break once we find all items with specified instances
+             * */
+            if (currNode.getNextNode() != null && currNode.getNextNode().getInstances() < instanceCount) break;
+
             currNode = currNode.getNextNode();
         }
         return matchItems;
@@ -107,6 +114,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             if (currNode.getItem().compareTo(item) == 0) {
                 return true;
             }
+            currNode = currNode.getNextNode();
         }
         return false;
     } // end of contains()
@@ -183,12 +191,11 @@ public class OrderedLinkedListMultiset extends RmitMultiset
     @Override
 	public String printRange(String lower, String upper) {
         Node currNode = head;
-
         StringBuffer rangeList = new StringBuffer();
 
         while (currNode != null) {
             if (currNode.getItem().compareTo(lower) >= 0 && currNode.getItem().compareTo(upper) <= 0) {
-                rangeList.append(currNode);
+            rangeList.insert(0, currNode.getItem() + ":" + currNode.getInstances() + "\n");
             }
             currNode = currNode.getNextNode();
         }
