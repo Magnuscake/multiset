@@ -1,0 +1,24 @@
+create sA
+add sA a
+add sA b
+add sA b
+add sA c
+add sA c
+add sA c
+add sA c
+add sA b
+add sA d
+print sA
+create sB
+add sB d
+add sB d
+add sB a
+add sB a
+add sB a
+add sB c
+add sB b
+add sB b
+print sB
+intersect sA sB sC
+print sC
+quit
