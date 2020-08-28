@@ -39,8 +39,9 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             }
             currNode = currNode.getNextNode();
         }
-        // Attach new node to head if corresponding item is the same
-        // as the head node
+
+        // Add new node
+        // Attach new node to head if corresponding item == head 
         if (newNode.getItem().compareTo(head.getItem()) < 0) {
             newNode.setNextNode(head);
             head = newNode;
@@ -191,14 +192,14 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             }
             currNode = currNode.getNextNode();
         }
-        return new String();
+        return new String(rangeList);
     } // end of printRange()
 
 
     @Override
 	public RmitMultiset union(RmitMultiset other) {
         // New multiset to be returned
-        OrderedLinkedListMultiset unionedLinkedList = new OrderedLinkedListMultiset();
+        RmitMultiset unionedLinkedList = new OrderedLinkedListMultiset();
 
         // First multiset to union
         Node multiset1CurrNode = head;
@@ -215,14 +216,14 @@ public class OrderedLinkedListMultiset extends RmitMultiset
         while (multiset1CurrNode != null) {
             newNode = new Node(multiset1CurrNode.getItem(), multiset1CurrNode.getInstances());
             
-            addNewNode(unionedLinkedList, newNode);
+            addNewNode((OrderedLinkedListMultiset) unionedLinkedList, newNode);
             multiset1CurrNode = multiset1CurrNode.getNextNode();
         }
 
         while (multiset2CurrNode != null) {
             newNode = new Node(multiset2CurrNode.getItem(), multiset2CurrNode.getInstances());
             
-            addNewNode(unionedLinkedList, newNode);
+            addNewNode((OrderedLinkedListMultiset) unionedLinkedList, newNode);
             multiset2CurrNode = multiset2CurrNode.getNextNode();
 
         }
@@ -233,7 +234,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public RmitMultiset intersect(RmitMultiset other) {
-        OrderedLinkedListMultiset intersectedMultiset = new OrderedLinkedListMultiset();
+        RmitMultiset intersectedMultiset = new OrderedLinkedListMultiset();
 
         // First multiset
         Node multiset1CurrNode = head;
@@ -250,7 +251,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
                     Node newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
 
-                    addNewNode(intersectedMultiset, newNode);
+                    addNewNode((OrderedLinkedListMultiset) intersectedMultiset, newNode);
                      break;
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
@@ -265,7 +266,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
     @Override
 	public RmitMultiset difference(RmitMultiset other) {
-        OrderedLinkedListMultiset diffMultiset = new OrderedLinkedListMultiset();
+        RmitMultiset diffMultiset = new OrderedLinkedListMultiset();
 
         // First multiset
         Node multiset1CurrNode = head;
@@ -282,14 +283,14 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                         
                     if (totalInstances > 0) {
                         newNode = new Node(multiset1CurrNode.getItem(), totalInstances);
-                        addNewNode(diffMultiset, newNode);
+                        addNewNode((OrderedLinkedListMultiset) diffMultiset, newNode);
                     }
                    break;
                 }
                 multiset2CurrNode = multiset2CurrNode.getNextNode();
             }
             if (multiset2CurrNode == null) {
-                addNewNode(diffMultiset, multiset1CurrNode);
+                addNewNode((OrderedLinkedListMultiset) diffMultiset, multiset1CurrNode);
             }
             multiset2CurrNode = otherToLinkedListMultiset.head;
             multiset1CurrNode = multiset1CurrNode.getNextNode();
