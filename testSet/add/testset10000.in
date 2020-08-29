@@ -1,4 +1,5 @@
 create s1
+starttimer
 add s1 2
 add s1 9
 add s1 8
@@ -9999,4 +10000,5 @@ add s1 10
 add s1 8
 add s1 9
 add s1 9
+endtimer
 quit

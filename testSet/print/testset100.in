@@ -99,5 +99,7 @@ add s1 5
 add s1 5
 add s1 2
 add s1 3
+starttimer
 print s1
+endtimer
 quit

@@ -99,6 +99,7 @@ add s1 5
 add s1 5
 add s1 2
 add s1 3
+starttimer
 removeOne s1 10
 removeOne s1 5
 removeOne s1 5
@@ -199,4 +200,5 @@ removeOne s1 5
 removeOne s1 5
 removeOne s1 2
 removeOne s1 3
+endtimer
 quit
