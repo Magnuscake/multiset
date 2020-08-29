@@ -62,7 +62,7 @@ public class TimeTester
 	 * @param inReader Input reader where the operation commands are coming from.
 	 * @param outWriter Where to output the results of search and print related operations.
 	 * @param creator Factory class to construct appropriate multiset instance.
-	 * @param multisetd Map of id and multiset, used to store the multisets created and operated upon.
+	 * @param multiset Map of id and multiset, used to store the multisets created and operated upon.
 	 *
 	 * @throws IOException If there is an exception to do with I/O.
 	 */
@@ -87,270 +87,241 @@ public class TimeTester
 			// determine which operation to execute
 
 
-			switch (command) {
-				case "starttimer":
-				{
-					startTime = System.nanoTime();
+			// list the multisets
+			if ("list".equals(command)) {
+				outWriter.println("# " + line);
+				for (String multisetId : multisets.keySet()) {
+					outWriter.println(multisetId);
 				}
-
-				case "endtimer":
-				{
-					endTime = System.nanoTime();
-					System.out.println("****time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
-				}
-
-				// list the multisets
-				case "list":
-					outWriter.println("# " + line);
-					for (String multisetId : multisets.keySet()) {
-						outWriter.println(multisetId);
-					}
-					break;
 				// create a new multiset
-				case "create":
-					if (tokens.length == 2) {
-						String id = tokens[1];
-						// check if multiset id used already
-						if (multisets.containsKey(id)) {
-							printErrorMsg("multiset identifier " + id + " is used currently.");
-						}
-						else {
-							RmitMultiset newMultiset = creator.createImplementation();
-							multisets.put(id, newMultiset);
-						}
+			} else if ("create".equals(command)) {
+				if (tokens.length == 2) {
+					String id = tokens[1];
+					// check if multiset id used already
+					if (multisets.containsKey(id)) {
+						printErrorMsg("multiset identifier " + id + " is used currently.");
+					} else {
+						RmitMultiset newMultiset = creator.createImplementation();
+						multisets.put(id, newMultiset);
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// add an element to a multiset
-				case "add":
-					if (tokens.length == 3)
-					{
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							multiset.add(tokens[2]);
-						}
-						else {
-							printErrorMsg("operation failed, id not found.");
-						}
+			} else if ("add".equals(command)) {
+				if (tokens.length == 3) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						multiset.add(tokens[2]);
+					} else {
+						printErrorMsg("operation failed, id not found.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-
-
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// search for an element in a multiset
-				case "search":
-					outWriter.println("# " + line);
-					if (tokens.length == 3) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							int foundNumber = multiset.search(tokens[2]);
-							if (foundNumber == RmitMultiset.searchFailed) {
-								outWriter.println(tokens[2] + " not found");
-							}
-							else {
-								outWriter.println(tokens[2] + " " + foundNumber);
-							}
+			} else if ("search".equals(command)) {
+				outWriter.println("# " + line);
+				if (tokens.length == 3) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						int foundNumber = multiset.search(tokens[2]);
+						if (foundNumber == RmitMultiset.searchFailed) {
+							outWriter.println(tokens[2] + " not found");
+						} else {
+							outWriter.println(tokens[2] + " " + foundNumber);
 						}
-						else {
-							// we print -1 to indicate error for automated testing
-							outWriter.println(RmitMultiset.searchFailed);
-							printErrorMsg(outWriter, "operation failed, id not found.");
-						}
-					}
-					else {
+					} else {
 						// we print -1 to indicate error for automated testing
 						outWriter.println(RmitMultiset.searchFailed);
-						printErrorMsg(outWriter, "not enough tokens.");
+						printErrorMsg(outWriter, "operation failed, id not found.");
 					}
-					break;
+				} else {
+					// we print -1 to indicate error for automated testing
+					outWriter.println(RmitMultiset.searchFailed);
+					printErrorMsg(outWriter, "not enough tokens.");
+				}
 				// search a multset for all elements that have a specified number of instances
-				case "searchByInstance":
-					outWriter.println("# " + line);
-					if (tokens.length == 3) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							int instanceToSearch = Integer.valueOf(tokens[2]);
-							if (instanceToSearch > 0) {
-								List<String> lItems = multiset.searchByInstance(instanceToSearch);
+			} else if ("searchByInstance".equals(command)) {
+				outWriter.println("# " + line);
+				if (tokens.length == 3) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						int instanceToSearch = Integer.valueOf(tokens[2]);
+						if (instanceToSearch > 0) {
+							List<String> lItems = multiset.searchByInstance(instanceToSearch);
 
-								if (lItems != null) {
-									// output
-									StringJoiner joiner = new StringJoiner(",");
-									for (String item : lItems) {
-										joiner.add(item);
-									}
-									outWriter.println(joiner.toString());
+							if (lItems != null) {
+								// output
+								StringJoiner joiner = new StringJoiner(",");
+								for (String item : lItems) {
+									joiner.add(item);
 								}
-								else {
-									outWriter.println(RmitMultiset.searchFailed);
-									printErrorMsg(outWriter, "operation failed, null returned.");
-								}
-							}
-							else {
-								// we print -1 to indicate error for automated testing
+								outWriter.println(joiner.toString());
+							} else {
 								outWriter.println(RmitMultiset.searchFailed);
-								printErrorMsg(outWriter, "operation failed, instance number must be greater than 0.");
+								printErrorMsg(outWriter, "operation failed, null returned.");
 							}
-						}
-						else {
+						} else {
 							// we print -1 to indicate error for automated testing
 							outWriter.println(RmitMultiset.searchFailed);
-							printErrorMsg(outWriter, "operation failed, id not found.");
+							printErrorMsg(outWriter, "operation failed, instance number must be greater than 0.");
 						}
-					}
-					else {
+					} else {
 						// we print -1 to indicate error for automated testing
 						outWriter.println(RmitMultiset.searchFailed);
-						printErrorMsg(outWriter, "not enough tokens.");
+						printErrorMsg(outWriter, "operation failed, id not found.");
 					}
-					break;
-				case "contains":
-					outWriter.println("# " + line);
-					if (tokens.length == 3) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							boolean bFound = multiset.contains(tokens[2]);
-							if (bFound) {
-								outWriter.println(tokens[2] + " is in multiset");
-							}
-							else {
-								outWriter.println(tokens[2] + " is not in multiset");
-							}
+				} else {
+					// we print -1 to indicate error for automated testing
+					outWriter.println(RmitMultiset.searchFailed);
+					printErrorMsg(outWriter, "not enough tokens.");
+				}
+			} else if ("contains".equals(command)) {
+				outWriter.println("# " + line);
+				if (tokens.length == 3) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						boolean bFound = multiset.contains(tokens[2]);
+						if (bFound) {
+							outWriter.println(tokens[2] + " is in multiset");
+						} else {
+							outWriter.println(tokens[2] + " is not in multiset");
 						}
-						else {
-							// we print -1 to indicate error for automated testing
-							outWriter.println(RmitMultiset.searchFailed);
-							printErrorMsg(outWriter, "operation failed, id not found.");
-						}
-					}
-					else {
+					} else {
 						// we print -1 to indicate error for automated testing
 						outWriter.println(RmitMultiset.searchFailed);
-						printErrorMsg(outWriter, "not enough tokens.");
+						printErrorMsg(outWriter, "operation failed, id not found.");
 					}
-					break;
+				} else {
+					// we print -1 to indicate error for automated testing
+					outWriter.println(RmitMultiset.searchFailed);
+					printErrorMsg(outWriter, "not enough tokens.");
+				}
 				// remove one instance of an element from a multiset
-				case "removeOne":
-
-					if (tokens.length == 3) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							multiset.removeOne(tokens[2]);
-						}
-						else {
-							printErrorMsg("operation failed, id not found.");
-						}
+			} else if ("removeOne".equals(command)) {
+				if (tokens.length == 3) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						multiset.removeOne(tokens[2]);
+					} else {
+						printErrorMsg("operation failed, id not found.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-
-
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// print the elements in a multiset, in descending order of the number of instances in multiset
-				case "print":
-					outWriter.println("# " + line);
-					if (tokens.length == 2) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							String sOut = multiset.print();
-							outWriter.print(sOut);
-							outWriter.flush();
-						}
-						else {
-							printErrorMsg("operation failed, id not found.");
-						}
+			} else if ("print".equals(command)) {
+				outWriter.println("# " + line);
+				if (tokens.length == 2) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						String sOut = multiset.print();
+						outWriter.print(sOut);
+						outWriter.flush();
+					} else {
+						printErrorMsg("operation failed, id not found.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// print all elements of a multiset that are within specified range
-				case "printRange":
-					outWriter.println("# " + line);
-					if (tokens.length == 4) {
-						RmitMultiset multiset = multisets.get(tokens[1]);
-						if (multiset != null) {
-							String sOut = multiset.printRange(tokens[2], tokens[3]);
-							outWriter.print(sOut);
-							outWriter.flush();
-						}
-						else {
-							printErrorMsg("operation failed, id not found.");
-						}
+			} else if ("printRange".equals(command)) {
+				outWriter.println("# " + line);
+				if (tokens.length == 4) {
+					RmitMultiset multiset = multisets.get(tokens[1]);
+					if (multiset != null) {
+						String sOut = multiset.printRange(tokens[2], tokens[3]);
+						outWriter.print(sOut);
+						outWriter.flush();
+					} else {
+						printErrorMsg("operation failed, id not found.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// compute the intersection of two multisets
-				case "intersect":
-					if (tokens.length == 4) {
-						RmitMultiset multiset1 = multisets.get(tokens[1]);
-						RmitMultiset multiset2 = multisets.get(tokens[2]);
-						if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
-							RmitMultiset newMultiset = multiset1.intersect(multiset2);
-							if (newMultiset != null) {
-								multisets.put(tokens[3], newMultiset);
-							}
+			} else if ("intersect".equals(command)) {
+				if (tokens.length == 4) {
+					RmitMultiset multiset1 = multisets.get(tokens[1]);
+					RmitMultiset multiset2 = multisets.get(tokens[2]);
+					if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
+						RmitMultiset newMultiset = multiset1.intersect(multiset2);
+						if (newMultiset != null) {
+							multisets.put(tokens[3], newMultiset);
 						}
-						else {
-							printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
-						}
+					} else {
+						printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// compute the union of two multisets
-				case "union":
-					if (tokens.length == 4) {
-						RmitMultiset multiset1 = multisets.get(tokens[1]);
-						RmitMultiset multiset2 = multisets.get(tokens[2]);
-						if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
-							RmitMultiset newMultiset = multiset1.union(multiset2);
-							if (newMultiset != null) {
-								multisets.put(tokens[3], newMultiset);
-							}
+			} else if ("union".equals(command)) {
+				if (tokens.length == 4) {
+					RmitMultiset multiset1 = multisets.get(tokens[1]);
+					RmitMultiset multiset2 = multisets.get(tokens[2]);
+					if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
+						RmitMultiset newMultiset = multiset1.union(multiset2);
+						if (newMultiset != null) {
+							multisets.put(tokens[3], newMultiset);
 						}
-						else {
-							printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
-						}
+					} else {
+						printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// compute the difference between two multisets
-				case "difference":
-					if (tokens.length == 4) {
-						RmitMultiset multiset1 = multisets.get(tokens[1]);
-						RmitMultiset multiset2 = multisets.get(tokens[2]);
-						if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
-							RmitMultiset newMultiset = multiset1.difference(multiset2);
-							if (newMultiset != null) {
-								multisets.put(tokens[3], newMultiset);
-							}
+			} else if ("difference".equals(command)) {
+				if (tokens.length == 4) {
+					RmitMultiset multiset1 = multisets.get(tokens[1]);
+					RmitMultiset multiset2 = multisets.get(tokens[2]);
+					if (multiset1 != null && multiset2 != null && !multisets.containsKey(tokens[3])) {
+						RmitMultiset newMultiset = multiset1.difference(multiset2);
+						if (newMultiset != null) {
+							multisets.put(tokens[3], newMultiset);
 						}
-						else {
-							printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
-						}
+					} else {
+						printErrorMsg("operation failed, id not found or duplicate id for new multiset.");
 					}
-					else {
-						printErrorMsg("not enough tokens.");
-					}
-					break;
+				} else {
+					printErrorMsg("not enough tokens.");
+				}
 				// quit
-				case "quit":
-					bQuit = true;
-					break;
-				default:
-					printErrorMsg("Unknown command.");
 			}
+			else if ("quit".equals(command))
+			{
+				bQuit = true;
+			}
+			else if ("starttimer".equals(command))
+			{
+				startTime = System.nanoTime();
+			}
+			else if ("endtimer".equals(command))
+			{
+				endTime = System.nanoTime();
+				System.out.println();
+				System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+			}
+
+
+			else
+				{
+				printErrorMsg("Unknown command.");
+			}
+
+			// else if (command.equals("starttimer")) 
+			// {
+			// 	startTime = System.nanoTime();
+				
+			// }
+			// else if (command.equals("endtimer")) 
+			// {
+			// 	endTime = System.nanoTime();
+			// 	System.out.println("****time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+			// }
+			
 		} // end of while
 
 	} // end of processOperations()
