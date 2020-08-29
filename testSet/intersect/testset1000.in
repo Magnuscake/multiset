@@ -2000,5 +2000,7 @@ add s2 8
 add s2 2
 add s2 2
 add s2 8
+starttimer
 intersect s1 s2 s3
+endtimer
 quit
