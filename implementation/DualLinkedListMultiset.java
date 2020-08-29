@@ -176,6 +176,8 @@ public class DualLinkedListMultiset extends RmitMultiset
 	public void removeOne(String item) {
         Node currNodeOne;
         Node currNodeTwo;
+        // Decrement length counter by 1 if true
+        boolean decrementLength = false;
 
 listOne: {
         /** Remove one from linked list one **/
@@ -184,7 +186,7 @@ listOne: {
             headOne.setInstances(headOne.getInstances() - 1);
             if (headOne.getInstances() == 0) {
                 headOne = headOne.getNextNode();
-                length--;
+                decrementLength = true;
                 break listOne;
             }
         }
@@ -198,7 +200,7 @@ listOne: {
                 // Delete item when count is 0
                 if (nextNode.getInstances() == 0) {
                     currNodeOne.setNextNode(nextNode.getNextNode());
-                    length--;
+                    decrementLength = true;
                 }
                 break;
             }
@@ -208,6 +210,7 @@ listOne: {
              
 }
 
+listTwo: {
         /** Remove one from linked list two */
         Node prevNode = null;
         currNodeTwo = headTwo;
@@ -215,42 +218,44 @@ listOne: {
         while (currNodeTwo != null) {
             if (currNodeTwo.getItem().compareTo(item) == 0) {
                 currNodeTwo.setInstances(currNodeTwo.getInstances() - 1);
-
-                // delete item when count is 0
-                if (currNodeTwo.getInstances() == 0) {
-                    // length of 1 means only headTwo is remaining
-                    if (length == 1) {
-                        headTwo = null;
-                    } 
-                    else if (currNodeTwo == headTwo) {
-                        headTwo = currNodeTwo.getNextNode();
-                    }
-                    currNodeTwo = null;
-                    length--;
-
-                } else {
-                    if (prevNode!= null && currNodeTwo.getInstances() < prevNode.getInstances()) {
-                        prevNode.setNextNode(currNodeTwo.getNextNode());
-
-                        Node comp_currNodeTwo = headTwo;
-                        Node comp_prevNode = null;
-                        
-                        while (comp_currNodeTwo != null) {
-                            if (currNodeTwo.getInstances() < comp_currNodeTwo.getInstances()) {
-                                currNodeTwo.setNextNode(comp_currNodeTwo);
-                                comp_prevNode.setNextNode(currNodeTwo);
-                                return;
-                            }
-                            comp_prevNode = comp_currNodeTwo;
-                            comp_currNodeTwo = comp_currNodeTwo.getNextNode();
-                        }
-                    }
-                }
+                break;
             }
-
             prevNode = currNodeTwo;
             currNodeTwo = currNodeTwo.getNextNode();
         }
+
+        if (currNodeTwo.getInstances() == 0) {
+            if (currNodeTwo == headTwo) {
+                headTwo = currNodeTwo.getNextNode();
+            } else {
+                prevNode.setNextNode(currNodeTwo.getNextNode());
+                currNodeTwo = null;
+                break listTwo;
+            }
+        } else {
+            if (prevNode!= null && currNodeTwo.getInstances() < prevNode.getInstances()) {
+                prevNode.setNextNode(currNodeTwo.getNextNode());
+                // Current node - node to reorder
+                Node tempNode = currNodeTwo;
+
+                // Reset currNodeTwo and prevNode
+                currNodeTwo = headTwo;
+                prevNode = null;
+
+                while (currNodeTwo != null) {
+                    if (tempNode.getInstances() < currNodeTwo.getInstances()) {
+                        prevNode.setNextNode(tempNode);
+                        tempNode.setNextNode(currNodeTwo);
+                        break;
+                    }
+                    prevNode = currNodeTwo;
+                    currNodeTwo = currNodeTwo.getNextNode();
+                }
+            }
+        }
+
+}
+        if (decrementLength) length--;
 
     } // end of removeOne()
 
