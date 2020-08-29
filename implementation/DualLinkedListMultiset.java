@@ -238,9 +238,16 @@ listTwo: {
                 // Current node - node to reorder
                 Node tempNode = currNodeTwo;
 
+                // Check if node to reorder should be placed at the start
+                if (tempNode.getInstances() < headTwo.getInstances()) {
+                   tempNode.setNextNode(headTwo);
+                   headTwo = tempNode;
+                   break listTwo;
+                }
+
                 // Reset currNodeTwo and prevNode
-                currNodeTwo = headTwo;
-                prevNode = null;
+                currNodeTwo = headTwo.getNextNode();
+                prevNode = headTwo;
 
                 while (currNodeTwo != null) {
                     if (tempNode.getInstances() < currNodeTwo.getInstances()) {
