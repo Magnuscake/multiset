@@ -27,6 +27,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 
         if (head == null) {
             head = newNode;
+            length++;
             return;
         }            
 
@@ -141,6 +142,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
                 // Delete item when count is 0
                 if (nextNode.getInstances() == 0) {
                     currNode.setNextNode(nextNode.getNextNode());
+                    nextNode = null;
                     length--;
                 }
                 break;
@@ -155,7 +157,7 @@ public class OrderedLinkedListMultiset extends RmitMultiset
 	public String print() {
         // By default, multiset already has a length of 1
         // Therefore, we add an extra one to the length
-        Node[] multisetArray = new Node[length + 1];
+        Node[] multisetArray = new Node[length];
         int arrayCount = 0;
         Node currNode = head;
 
@@ -165,11 +167,11 @@ public class OrderedLinkedListMultiset extends RmitMultiset
             arrayCount++;
         }
 
+        // Temporarily store node to order
+        Node temp;
+
         for (int i = 0; i < multisetArray.length; i++) {
            for (int j = i + 1; j < multisetArray.length; j++) {
-               // Temporary node
-               Node temp;
-
                if (multisetArray[i].getInstances() > multisetArray[j].getInstances()) {
                    temp = multisetArray[i];
                    multisetArray[i] = multisetArray[j];
