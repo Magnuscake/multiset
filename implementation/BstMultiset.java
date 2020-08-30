@@ -149,6 +149,8 @@ public class BstMultiset extends RmitMultiset {
 
 
     public Node deleteRec(Node node, String item) {
+        //decrease the count of the node
+        //if the count of the tree is 1,
         //delete the node and rearrange the tree
         if (node == null) return null;
 
