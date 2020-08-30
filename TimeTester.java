@@ -62,7 +62,7 @@ public class TimeTester
 	 * @param inReader Input reader where the operation commands are coming from.
 	 * @param outWriter Where to output the results of search and print related operations.
 	 * @param creator Factory class to construct appropriate multiset instance.
-	 * @param multiset Map of id and multiset, used to store the multisets created and operated upon.
+	 * @param multisets Map of id and multiset, used to store the multisets created and operated upon.
 	 *
 	 * @throws IOException If there is an exception to do with I/O.
 	 */
@@ -302,26 +302,12 @@ public class TimeTester
 			{
 				endTime = System.nanoTime();
 				System.out.println();
-				System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+				System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 6)+ " ms");
 			}
-
-
 			else
 				{
 				printErrorMsg("Unknown command.");
 			}
-
-			// else if (command.equals("starttimer")) 
-			// {
-			// 	startTime = System.nanoTime();
-				
-			// }
-			// else if (command.equals("endtimer")) 
-			// {
-			// 	endTime = System.nanoTime();
-			// 	System.out.println("****time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
-			// }
-			
 		} // end of while
 
 	} // end of processOperations()
