@@ -172,21 +172,15 @@ public class DataGenerator
 	} // end of main()
 
 
-	private static void fileHandle() throws IOException
-	{
+	private static void fileHandle() throws IOException{
 		FileWriter fileWriter = new FileWriter("testset.in");
-
 		fileWriter.write("create s1" + "\n");
-
-		for (int i = 0; i < samples.length; i++)
-		{
-			fileWriter.write("add s1 " + samples[i] + "\n");
+		
+		for (int sample : samples) {
+			fileWriter.write("add s1 " + sample + "\n");
 		}
-
 		fileWriter.write("print s1" + "\n");
-
 		fileWriter.write("quit");
-
 		fileWriter.close();
 	}
 

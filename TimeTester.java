@@ -12,20 +12,16 @@ import java.util.StringJoiner;
 // DO NOT USE any OR ADD other java.util.* packages and classes
 // UNLESS it is specified in the official assignment 1 FAQ
 
-
 /**
  * Framework to test the multiset implementations.
  *
  * @author Jeffrey Chan & Yongli Ren, RMIT 2020
  */
-public class TimeTester
-{
+public class TimeTester {
 	/** Name of class, used in error messages. */
 	protected static final String progName = "MultisetTester";
 	static long startTime;
 	static long endTime;
-
-
 
 	/**
 	 * Print help/usage message.
@@ -36,7 +32,6 @@ public class TimeTester
 		System.exit(1);
 	} // end of usage
 
-
 	/**
 	 * Print error message to System.err.
 	 */
@@ -44,35 +39,36 @@ public class TimeTester
 		System.err.println("> " + msg);
 	} // end of printErrorMsg()
 
-
 	/**
 	 * Print error message to specified outWriter.
 	 *
 	 * @param outWriter PrintWriter to write error messages to.
-	 * @param msg Error message.
+	 * @param msg       Error message.
 	 */
 	public static void printErrorMsg(PrintWriter outWriter, String msg) {
 		outWriter.println("> " + msg);
 	} // end of printErrorMsg()
 
-
 	/**
-	 * Process the operation commands coming from inReader, and updates the multiset according to the operations.
+	 * Process the operation commands coming from inReader, and updates the multiset
+	 * according to the operations.
 	 *
-	 * @param inReader Input reader where the operation commands are coming from.
-	 * @param outWriter Where to output the results of search and print related operations.
-	 * @param creator Factory class to construct appropriate multiset instance.
-	 * @param multisets Map of id and multiset, used to store the multisets created and operated upon.
+	 * @param inReader  Input reader where the operation commands are coming from.
+	 * @param outWriter Where to output the results of search and print related
+	 *                  operations.
+	 * @param creator   Factory class to construct appropriate multiset instance.
+	 * @param multisets Map of id and multiset, used to store the multisets created
+	 *                  and operated upon.
 	 *
 	 * @throws IOException If there is an exception to do with I/O.
 	 */
-	public static void processOperations(BufferedReader inReader, PrintWriter outWriter, MultisetImplCreator creator, Map<String, RmitMultiset> multisets)
-		throws IOException
-	{
+	public static void processOperations(BufferedReader inReader, PrintWriter outWriter, MultisetImplCreator creator,
+			Map<String, RmitMultiset> multisets) throws IOException {
 		String line;
 		boolean bQuit = false;
 
-		// continue reading in commands until we either receive the quit signal or there are no more input commands
+		// continue reading in commands until we either receive the quit signal or there
+		// are no more input commands
 		while (!bQuit && (line = inReader.readLine()) != null) {
 			// tokens can be separted by one or more whitespaces
 			String[] tokens = line.split("\\s+");
@@ -85,7 +81,6 @@ public class TimeTester
 
 			String command = tokens[0];
 			// determine which operation to execute
-
 
 			// list the multisets
 			if ("list".equals(command)) {
@@ -210,7 +205,8 @@ public class TimeTester
 				} else {
 					printErrorMsg("not enough tokens.");
 				}
-				// print the elements in a multiset, in descending order of the number of instances in multiset
+				// print the elements in a multiset, in descending order of the number of
+				// instances in multiset
 			} else if ("print".equals(command)) {
 				outWriter.println("# " + line);
 				if (tokens.length == 2) {
@@ -289,32 +285,24 @@ public class TimeTester
 					printErrorMsg("not enough tokens.");
 				}
 				// quit
-			}
-			else if ("quit".equals(command))
-			{
+			} else if ("quit".equals(command)) {
 				bQuit = true;
-			}
-			else if ("starttimer".equals(command))
-			{
+			} else if ("starttimer".equals(command)) {
 				startTime = System.nanoTime();
-			}
-			else if ("endtimer".equals(command))
-			{
+			} else if ("endtimer".equals(command)) {
 				endTime = System.nanoTime();
 				System.out.println();
-				System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 6)+ " ms");
-			}
-			else
-				{
+				System.out.println("time taken = " 
+						+ ((double) (endTime - startTime)) / Math.pow(10, 6) + " ms");
+			} else {
 				printErrorMsg("Unknown command.");
 			}
 		} // end of while
 
 	} // end of processOperations()
 
-
 	/**
-	 * Main method.  Determines which implementation to test.
+	 * Main method. Determines which implementation to test.
 	 */
 	public static void main(String[] args) {
 
@@ -331,9 +319,8 @@ public class TimeTester
 			outFilename = args[1];
 		}
 
-
 		// Construct multiset container and the factory object to create multiset
-		Map<String, RmitMultiset> hMultisets =  new HashMap<String, RmitMultiset>();
+		Map<String, RmitMultiset> hMultisets = new HashMap<String, RmitMultiset>();
 		// Factory
 		try {
 			MultisetImplCreator creator = new MultisetImplCreator(implementationType);
@@ -349,10 +336,9 @@ public class TimeTester
 			// process the operations
 			processOperations(inReader, outWriter, creator, hMultisets);
 		} catch (IllegalArgumentException e) {
-				printErrorMsg(e.getMessage());
-				usage(progName);
-		}
-		catch (IOException e) {
+			printErrorMsg(e.getMessage());
+			usage(progName);
+		} catch (IOException e) {
 			printErrorMsg(e.getMessage());
 		}
 
