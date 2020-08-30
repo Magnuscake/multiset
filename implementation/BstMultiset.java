@@ -10,68 +10,53 @@ import java.util.List;
  *
  * @author Jeffrey Chan & Yongli Ren, RMIT 2020
  */
-public class BstMultiset extends RmitMultiset
-{
-    protected Node rootNode;
-    protected Node uRootNode;
-    protected Node iRootNode;
-    protected Node dRootNode;
+public class BstMultiset extends RmitMultiset {
+    protected Node rootNode; //rootNode for new BstMultiset
+    protected Node uRootNode;   //rootNode for BstMultiset returned by union
+    protected Node iRootNode;   //rootNode for BstMultiset returned by intersect
+    protected Node dRootNode;   //rootNode for BstMultiset returned by difference
 
 
-    public BstMultiset()
-    {
+    public BstMultiset() {
         rootNode = null;
     }
 
 
     @Override
-	public void add(String value)
-    {
+    public void add(String value) {
         Node newNode = new Node(value, 1);
 
-        if(rootNode == null)
-        {
+        if (rootNode == null) {
             rootNode = newNode;
-        }
-        else
-        {
+        } else {
             Node prevNode = null;
             Node currNode = rootNode;
             boolean createNewItem = true;
 
-            while (currNode!= null)
-            {
-                if (currNode.getValue().equals(value))
-                {
+            //traverse the tree iteratively
+            while (currNode != null) {
+                if (currNode.getValue().equals(value)) {
                     currNode.setCount(currNode.getCount() + 1);
                     createNewItem = false;
                     break;
-                }
-                else
-                {
+                } else {
                     prevNode = currNode;
 
-                    if (value.compareTo(currNode.getValue()) >= 0)
-                    {
+                    if (value.compareTo(currNode.getValue()) >= 0) {
                         currNode = currNode.getRightNode();
-                    }
-                    else
-                    {
+                    } else {
                         currNode = currNode.getLeftNode();
                     }
                 }
             }
 
-            if (createNewItem)
-            {
+            //create new node if there is no duplicate
+            if (createNewItem) {
                 newNode.setPrevNode(prevNode);
 
-                if (value.compareTo(prevNode.getValue()) >= 0)
-                {
+                if (value.compareTo(prevNode.getValue()) >= 0) {
                     prevNode.rightNode = newNode;
-                }
-                else
-                {
+                } else {
                     prevNode.leftNode = newNode;
                 }
             }
@@ -80,19 +65,15 @@ public class BstMultiset extends RmitMultiset
 
 
     @Override
-	public int search(String item)
-    {
+    public int search(String item) {
         int returnInt;
 
         if (rootNode == null) return searchFailed;
-        else
-        {
-            if (searchTravel(rootNode, item) == null)
-            {
+        else {
+            if (searchTravel(rootNode, item) == null) {
                 return searchFailed;
-            }
-            else
-            {
+            } // call a recursive method to traverse the tree
+            else {
                 returnInt = searchTravel(rootNode, item).getCount();
             }
         }
@@ -102,9 +83,9 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    public Node searchTravel(Node node, String item)
-    {
-        if (node==null || node.value.equals(item))
+    public Node searchTravel(Node node, String item) {
+        //recursively search the tree
+        if (node == null || node.value.equals(item))
             return node;
 
         if (item.compareTo(node.value) < 0)
@@ -115,22 +96,19 @@ public class BstMultiset extends RmitMultiset
 
 
     @Override
-	public List<String> searchByInstance(int instanceCount)
-    {
+    public List<String> searchByInstance(int instanceCount) {
         List<String> elemList = new ArrayList<>();
         if (rootNode == null) return null;
+        //building the return string using recursive method
         else return insTravel(rootNode, instanceCount, elemList);
     }
 
 
-    public List<String> insTravel(Node node, int count, List<String> elemList)
-    {
-        if (node != null)
-        {
+    public List<String> insTravel(Node node, int count, List<String> elemList) {
+        if (node != null) {
             insTravel(node.leftNode, count, elemList);
 
-            if (node.getCount() == count)
-            {
+            if (node.getCount() == count) {
                 elemList.add(node.getValue());
             }
             insTravel(node.rightNode, count, elemList);
@@ -140,48 +118,45 @@ public class BstMultiset extends RmitMultiset
 
 
     @Override
-	public boolean contains(String item)
-    {
+    public boolean contains(String item) {
         if (rootNode == null) return false;
-        if (searchTravel(rootNode, item) == null) return false;
-        else return true;
+        return searchTravel(rootNode, item) != null;
     }
 
 
     @Override
-	public void removeOne(String item)
-    {
+    public void removeOne(String item) {
+        //first find the node that will be removed/decreased
         Node removeNode = searchTravel(rootNode, item);
 
         if (removeNode == null) return;
 
-        if (removeNode.getCount() > 1)
-        {
+        //decrease the count
+        if (removeNode.getCount() > 1) {
             removeNode.setCount(removeNode.getCount() - 1);
         }
-        else
-        {
+        //remove the node from the tree
+        else {
             deleteKey(item);
         }
     }
 
 
-    public void deleteKey(String item)
-    {
+    public void deleteKey(String item) {
+        //call a recursive method
         rootNode = deleteRec(rootNode, item);
     }
 
 
-    public Node deleteRec(Node node, String item)
-    {
-        if (node == null)  return node;
+    public Node deleteRec(Node node, String item) {
+        //delete the node and rearrange the tree
+        if (node == null) return null;
 
         if (item.compareTo(node.value) < 0)
             node.leftNode = deleteRec(node.leftNode, item);
         else if (item.compareTo(node.value) > 0)
             node.rightNode = deleteRec(node.rightNode, item);
-        else
-        {
+        else {
             if (node.leftNode == null)
                 return node.rightNode;
             else if (node.rightNode == null)
@@ -195,11 +170,9 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    String minValue(Node node)
-    {
+    String minValue(Node node) {
         String minv = node.value;
-        while (node.leftNode != null)
-        {
+        while (node.leftNode != null) {
             minv = node.leftNode.value;
             node = node.leftNode;
         }
@@ -208,8 +181,8 @@ public class BstMultiset extends RmitMultiset
 
 
     @Override
-    public String print()
-    {
+    public String print() {
+        //first convert bst to array then bubble sort the array before printing
         Node[] nodeArray;
         List<Node> list;
         StringBuilder sb = new StringBuilder();
@@ -227,8 +200,7 @@ public class BstMultiset extends RmitMultiset
 
 
     @Override
-	public String printRange(String lower, String upper)
-    {
+    public String printRange(String lower, String upper) {
         Node[] array = new Node[0];
         List<Node> ay;
         StringBuilder sb = new StringBuilder();
@@ -236,46 +208,43 @@ public class BstMultiset extends RmitMultiset
         ay = Arrays.asList(array);
         List<Node> sList = bubbleSort(ay);
 
-        for (int i = 0; i < sList.size(); i++)
-        {
-            if (sList.get(i).getValue().compareTo(lower) >= 0
-                    && sList.get(i).getValue().compareTo(upper) <= 0)
-            {
-                sb.append(sList.get(i).getValue()).append(": ").
-                        append(sList.get(i).getCount()).append("\n");
+        for (Node node : sList) {
+            if (node.getValue().compareTo(lower) >= 0
+                    && node.getValue().compareTo(upper) <= 0) {
+                sb.append(node.getValue()).append(": ").
+                        append(node.getCount()).append("\n");
             }
         }
         return sb.toString();
     }
 
-
+    //For union, intersect and difference
+    //bst will be first converted to a normal array, then convert back to bst after the operation
+    //the implementations for these 3 methods are the same with array multiset
+    //except for the converting part
+    //the data structure itself is always bst, array is only a medium for the operation
     @Override
-	public RmitMultiset union(RmitMultiset other)
-    {
+    public RmitMultiset union(RmitMultiset other) {
         Node[] nodeArray;
         Node[] otherArray;
         Node[] newArray;
         BstMultiset newSet = new BstMultiset();
         boolean found;
-        int index= 0;
+        int index = 0;
         int count = 0;
 
-        if (other instanceof BstMultiset)
-        {
+        if (other instanceof BstMultiset) {
             Node otherRoot = ((BstMultiset) other).rootNode;
             nodeArray = createArray(rootNode);
             otherArray = createArray(otherRoot);
             newArray = nodeArray;
 
-            for (int i = 0; i < otherArray.length; i++)
-            {
+            for (Node value : otherArray) {
                 found = false;
 
-                for (int j = 0; j < nodeArray.length; j++)
-                {
-                    if (nodeArray[j].getValue().equals(otherArray[i].getValue()))
-                    {
-                        count = otherArray[i].getCount() + nodeArray[j].getCount();
+                for (int j = 0; j < nodeArray.length; j++) {
+                    if (nodeArray[j].getValue().equals(value.getValue())) {
+                        count = value.getCount() + nodeArray[j].getCount();
                         index = j;
                         found = true;
                         break;
@@ -283,21 +252,17 @@ public class BstMultiset extends RmitMultiset
                 }
 
 
-                if (found)
-                {
-                    Node newObj = new Node(otherArray[i].getValue(), count);
+                if (found) {
+                    Node newObj = new Node(value.getValue(), count);
                     newArray[index] = newObj;
-                }
-                else
-                {
+                } else {
                     newArray = addSize(newArray);
-                    newArray[newArray.length - 1] = otherArray[i];
+                    newArray[newArray.length - 1] = value;
                 }
             }
 
-            for (int i = 0; i < newArray.length; i++)
-            {
-                unionArrayToBst(newArray[i].getValue(), newArray[i].getCount());
+            for (Node node : newArray) {
+                unionArrayToBst(node.getValue(), node.getCount());
             }
             newSet.rootNode = uRootNode;
         }
@@ -305,52 +270,39 @@ public class BstMultiset extends RmitMultiset
         return newSet;
     }
 
-
-    public void unionArrayToBst(String value, int count)
-    {
+    //method for converting array back to bst
+    public void unionArrayToBst(String value, int count) {
         Node newNode = new Node(value, count);
 
-        if(uRootNode == null)
-        {
+        if (uRootNode == null) {
             uRootNode = newNode;
-        }
-        else
-        {
+        } else {
             Node prevNode = null;
             Node currNode = uRootNode;
 
-            while (currNode!= null)
-            {
+            while (currNode != null) {
                 prevNode = currNode;
 
-                if (value.compareTo(currNode.getValue()) >= 0)
-                {
+                if (value.compareTo(currNode.getValue()) >= 0) {
                     currNode = currNode.getRightNode();
 
-                }
-                else
-                {
+                } else {
                     currNode = currNode.getLeftNode();
                 }
             }
 
             newNode.setPrevNode(prevNode);
 
-            if (value.compareTo(prevNode.getValue()) >= 0)
-            {
+            if (value.compareTo(prevNode.getValue()) >= 0) {
                 prevNode.rightNode = newNode;
-            }
-            else
-            {
+            } else {
                 prevNode.leftNode = newNode;
             }
         }
     }
 
-
     @Override
-    public RmitMultiset intersect(RmitMultiset other)
-    {
+    public RmitMultiset intersect(RmitMultiset other) {
         Node[] nodeArray;
         Node[] otherArray;
         Node[] newArray = new Node[0];
@@ -358,72 +310,55 @@ public class BstMultiset extends RmitMultiset
         Node[] smallArray;
         BstMultiset newSet = new BstMultiset();
         boolean found;
-        int index= 0;
+        int index = 0;
 
-        if (other instanceof BstMultiset)
-        {
+        if (other instanceof BstMultiset) {
             Node otherRoot = ((BstMultiset) other).rootNode;
             nodeArray = createArray(rootNode);
             otherArray = createArray(otherRoot);
 
-            if (nodeArray.length >= otherArray.length)
-            {
+            if (nodeArray.length >= otherArray.length) {
                 bigArray = nodeArray;
                 smallArray = otherArray;
-            }
-            else
-            {
+            } else {
                 bigArray = otherArray;
                 smallArray = nodeArray;
             }
 
-            for (int i = 0; i < bigArray.length; i++)
-            {
+            for (Node value : bigArray) {
                 found = false;
 
-                for (int j = 0; j < smallArray.length; j++)
-                {
-                    if (bigArray[i].getValue().equals(smallArray[j].getValue()))
-                    {
+                for (int j = 0; j < smallArray.length; j++) {
+                    if (value.getValue().equals(smallArray[j].getValue())) {
                         index = j;
                         found = true;
                         break;
                     }
                 }
 
-                if (found)
-                {
+                if (found) {
                     newArray = addSize(newArray);
 
-                    if (bigArray[i].getCount() == (smallArray[index].getCount()))
-                    {
-                        if (newArray[0] == null)
-                        {
-                            newArray[0] = bigArray[i];
-                        }
-                        else newArray[newArray.length - 1] = bigArray[i];
-                    }
-                    else
-                    {
-                        int count = Math.min(bigArray[i].getCount(), smallArray[index].getCount());
+                    if (value.getCount() == (smallArray[index].getCount())) {
+                        if (newArray[0] == null) {
+                            newArray[0] = value;
+                        } else newArray[newArray.length - 1] = value;
+                    } else {
+                        int count = Math.min(value.getCount(), smallArray[index].getCount());
 
-                        if (newArray[0] == null)
-                        {
-                            newArray[0] = bigArray[i];
+                        if (newArray[0] == null) {
+                            newArray[0] = value;
                             newArray[0].setCount(count);
-                        }
-                        else
-                        {
-                            newArray[newArray.length - 1] = bigArray[i];
+                        } else {
+                            newArray[newArray.length - 1] = value;
                             newArray[newArray.length - 1].setCount(count);
                         }
                     }
                 }
             }
 
-            for (int i = 0; i < newArray.length; i++)
-            {
-                interArrayToBst(newArray[i].getValue(), newArray[i].getCount());
+            for (Node node : newArray) {
+                interArrayToBst(node.getValue(), node.getCount());
             }
 
             newSet.rootNode = iRootNode;
@@ -432,115 +367,87 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    public void interArrayToBst(String value, int count)
-    {
+    public void interArrayToBst(String value, int count) {
         Node newNode = new Node(value, count);
 
-        if(iRootNode == null)
-        {
+        if (iRootNode == null) {
             iRootNode = newNode;
-        }
-        else
-        {
+        } else {
             Node prevNode = null;
             Node currNode = iRootNode;
 
-            while (currNode!= null)
-            {
+            while (currNode != null) {
                 prevNode = currNode;
 
-                if (value.compareTo(currNode.getValue()) >= 0)
-                {
+                if (value.compareTo(currNode.getValue()) >= 0) {
                     currNode = currNode.getRightNode();
 
-                }
-                else
-                {
+                } else {
                     currNode = currNode.getLeftNode();
                 }
             }
 
             newNode.setPrevNode(prevNode);
 
-            if (value.compareTo(prevNode.getValue()) >= 0)
-            {
+            if (value.compareTo(prevNode.getValue()) >= 0) {
                 prevNode.rightNode = newNode;
-            }
-            else
-            {
+            } else {
                 prevNode.leftNode = newNode;
             }
         }
     }
 
-
     @Override
-    public RmitMultiset difference(RmitMultiset other)
-    {
+    public RmitMultiset difference(RmitMultiset other) {
         Node[] nodeArray;
         Node[] otherArray;
         Node[] newArray = new Node[0];
         BstMultiset newSet = new BstMultiset();
         boolean found;
-        int index= 0;
+        int index = 0;
 
-        if (other instanceof BstMultiset)
-        {
+        if (other instanceof BstMultiset) {
             Node otherRoot = ((BstMultiset) other).rootNode;
             nodeArray = createArray(rootNode);
             otherArray = createArray(otherRoot);
 
-            for (int i = 0; i < nodeArray.length; i++)
-            {
-                int count = nodeArray[i].getCount();
+            for (Node value : nodeArray) {
+                int count = value.getCount();
                 found = false;
 
-                for (int j = 0; j < otherArray.length; j++)
-                {
-                    if (nodeArray[i].getValue().equals(otherArray[j].getValue()))
-                    {
+                for (int j = 0; j < otherArray.length; j++) {
+                    if (value.getValue().equals(otherArray[j].getValue())) {
                         found = true;
-                        count = Math.abs(nodeArray[i].getCount() - otherArray[j].getCount());
+                        count = Math.abs(value.getCount() - otherArray[j].getCount());
                         index = j;
                         break;
                     }
                 }
 
-                if (found)
-                {
-                    if (nodeArray[i].getCount() > (otherArray[index].getCount()))
-                    {
+                if (found) {
+                    if (value.getCount() > (otherArray[index].getCount())) {
                         newArray = addSize(newArray);
 
-                        Node newObj = new Node(nodeArray[i].getValue(), count);
-                        if (newArray[0] == null)
-                        {
+                        Node newObj = new Node(value.getValue(), count);
+                        if (newArray[0] == null) {
                             newArray[0] = newObj;
-                        }
-                        else
-                        {
+                        } else {
                             newArray[newArray.length - 1] = newObj;
                         }
                     }
-                }
-                else
-                {
+                } else {
                     newArray = addSize(newArray);
 
-                    if (newArray[0] == null)
-                    {
-                        newArray[0] = nodeArray[i];
-                    }
-                    else
-                    {
-                        newArray[newArray.length - 1] = nodeArray[i];
+                    if (newArray[0] == null) {
+                        newArray[0] = value;
+                    } else {
+                        newArray[newArray.length - 1] = value;
                     }
                 }
             }
 
-            for (int i = 0; i < newArray.length; i++)
-            {
-                differArrayToBst(newArray[i].getValue(), newArray[i].getCount());
+            for (Node node : newArray) {
+                differArrayToBst(node.getValue(), node.getCount());
             }
 
             newSet.rootNode = dRootNode;
@@ -550,50 +457,37 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    public void differArrayToBst(String value, int count)
-    {
+    public void differArrayToBst(String value, int count) {
         Node newNode = new Node(value, count);
 
-        if(dRootNode == null)
-        {
+        if (dRootNode == null) {
             dRootNode = newNode;
-        }
-        else
-        {
+        } else {
             Node prevNode = null;
             Node currNode = dRootNode;
 
-            while (currNode!= null)
-            {
+            while (currNode != null) {
                 prevNode = currNode;
 
-                if (value.compareTo(currNode.getValue()) >= 0)
-                {
+                if (value.compareTo(currNode.getValue()) >= 0) {
                     currNode = currNode.getRightNode();
 
-                }
-                else
-                {
+                } else {
                     currNode = currNode.getLeftNode();
                 }
             }
-
             newNode.setPrevNode(prevNode);
 
-            if (value.compareTo(prevNode.getValue()) >= 0)
-            {
+            if (value.compareTo(prevNode.getValue()) >= 0) {
                 prevNode.rightNode = newNode;
-            }
-            else
-            {
+            } else {
                 prevNode.leftNode = newNode;
             }
         }
     }
 
-
-    public Node[] createArray(Node root)
-    {
+    //convert bst to array
+    public Node[] createArray(Node root) {
         Node[] ay = new Node[0];
         Node current, pre;
 
@@ -601,28 +495,20 @@ public class BstMultiset extends RmitMultiset
 
         current = root;
 
-        while (current != null)
-        {
-            if (current.leftNode == null)
-            {
+        while (current != null) {
+            if (current.leftNode == null) {
                 ay = addSize(ay);
                 ay[ay.length - 1] = current;
                 current = current.rightNode;
-            }
-            else
-            {
+            } else {
                 pre = current.leftNode;
                 while (pre.rightNode != null && pre.rightNode != current)
                     pre = pre.rightNode;
 
-                if (pre.rightNode == null)
-                {
+                if (pre.rightNode == null) {
                     pre.rightNode = current;
                     current = current.leftNode;
-                }
-
-                else
-                {
+                } else {
                     pre.rightNode = null;
                     ay = addSize(ay);
                     ay[ay.length - 1] = current;
@@ -634,28 +520,22 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    public List<Node> bubbleSort(List<Node> nodeList)
-    {
+    public List<Node> bubbleSort(List<Node> nodeList) {
         int n = nodeList.size();
         boolean swapped;
         Node tempNode;
 
-        if (n != 1)
-        {
-            for (int i = 0; i < n - 1; i++)
-            {
+        if (n != 1) {
+            for (int i = 0; i < n - 1; i++) {
                 swapped = false;
-                for (int j = 0; j < n - i - 1; j++)
-                {
-                    if (nodeList.get(j).getCount() < nodeList.get(j+1).getCount())
-                    {
+                for (int j = 0; j < n - i - 1; j++) {
+                    if (nodeList.get(j).getCount() < nodeList.get(j + 1).getCount()) {
                         tempNode = nodeList.get(j);
-                        nodeList.set(j, nodeList.get(j+1));
-                        nodeList.set(j+1, tempNode);
+                        nodeList.set(j, nodeList.get(j + 1));
+                        nodeList.set(j + 1, tempNode);
                         swapped = true;
                     }
                 }
-
                 if (!swapped) break;
             }
         }
@@ -663,8 +543,7 @@ public class BstMultiset extends RmitMultiset
     }
 
 
-    public Node[] addSize(Node[] array)
-    {
+    public Node[] addSize(Node[] array) {
         Node[] tempArray;
         tempArray = array;
         array = new Node[array.length + 1];
@@ -674,17 +553,16 @@ public class BstMultiset extends RmitMultiset
         return array;
     }
 
-
-    public class Node
-    {
+    //node object that has 5 attributes: value, count, previous node,
+    //right node and left node.
+    public class Node {
         String value;
         int count;
         Node prevNode;
         Node leftNode;
         Node rightNode;
 
-        Node(String value, int count)
-        {
+        Node(String value, int count) {
             this.value = value;
             this.count = count;
             prevNode = null;
@@ -693,24 +571,65 @@ public class BstMultiset extends RmitMultiset
         }
 
         //getters and setters
-        public String getValue() { return value; }
-        public void setValue(String value) { this.value = value; }
+        public String getValue() {
+            return value;
+        }
 
-        public Node getPrevNode() { return prevNode; }
-        public Node getLeftNode() { return leftNode; }
-        public Node getRightNode() { return rightNode; }
-        public void setPrevNode(Node prevNode) { this.prevNode = prevNode; }
-        public void setLeftNode(Node leftNode) { this.leftNode = leftNode; }
-        public void setRightNode(Node rightNode) { this.rightNode = rightNode; }
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-        public boolean hasNext() { return this.getLeftNode() != null || this.getRightNode() != null; }
-        public boolean hasLeft() { return this.getLeftNode() != null; }
-        public boolean hasRight() { return this.getRightNode() != null; }
+        public Node getPrevNode() {
+            return prevNode;
+        }
 
-        public void add(int amount) { this.count += amount; }
-        public void remove(int amount) { this.count -= amount; }
-        public int getCount() { return count; }
-        public void setCount(int count) { this.count = count; }
+        public Node getLeftNode() {
+            return leftNode;
+        }
+
+        public Node getRightNode() {
+            return rightNode;
+        }
+
+        public void setPrevNode(Node prevNode) {
+            this.prevNode = prevNode;
+        }
+
+        public void setLeftNode(Node leftNode) {
+            this.leftNode = leftNode;
+        }
+
+        public void setRightNode(Node rightNode) {
+            this.rightNode = rightNode;
+        }
+
+        public boolean hasNext() {
+            return this.getLeftNode() != null || this.getRightNode() != null;
+        }
+
+        public boolean hasLeft() {
+            return this.getLeftNode() != null;
+        }
+
+        public boolean hasRight() {
+            return this.getRightNode() != null;
+        }
+
+        public void add(int amount) {
+            this.count += amount;
+        }
+
+        public void remove(int amount) {
+            this.count -= amount;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
 
     }
 
