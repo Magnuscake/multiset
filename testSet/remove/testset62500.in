@@ -99999,6 +99999,7 @@ add s1 39526
 add s1 24697
 add s1 52986
 add s1 30117
+starttimer
 removeOne s1 58294
 removeOne s1 60363
 removeOne s1 40410
@@ -199999,4 +200000,5 @@ removeOne s1 39526
 removeOne s1 24697
 removeOne s1 52986
 removeOne s1 30117
+endtimer
 quit

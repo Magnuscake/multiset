@@ -99999,6 +99999,7 @@ add s1 481
 add s1 282
 add s1 403
 add s1 277
+starttimer
 removeOne s1 289
 removeOne s1 195
 removeOne s1 418
@@ -199999,4 +200000,5 @@ removeOne s1 481
 removeOne s1 282
 removeOne s1 403
 removeOne s1 277
+endtimer
 quit

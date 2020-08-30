@@ -175,7 +175,6 @@ public class DataGenerator
 	private static void fileHandle() throws IOException{
 		FileWriter fileWriter = new FileWriter("testset.in");
 		fileWriter.write("create s1" + "\n");
-		
 		for (int sample : samples) {
 			fileWriter.write("add s1 " + sample + "\n");
 		}

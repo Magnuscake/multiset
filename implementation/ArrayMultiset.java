@@ -100,16 +100,17 @@ public class ArrayMultiset extends RmitMultiset {
     @Override
     public void removeOne(String elem) {
         for (int i = 0; i < array.length; i++) {
-            if (array[i].getValue().equals(elem)) {
+            if (array[i].getValue().equals(elem))
+            {
                 //if the count of this object is 1, remove this object
-                if (array[i].getCount() == 1) {
+                if (array[i].getCount() == 1)
+                {
+                    // Create another array of size one less
                     ArrayObj[] newArray = new ArrayObj[array.length - 1];
-
                     System.arraycopy(array, 0, newArray, 0, i);
-
-                    if (array.length - i + 1 >= 0)
-                        System.arraycopy(array, i + 1, newArray,
-                                i + 1 - 1, array.length - i + 1);
+                    
+                    System.arraycopy(array, i + 1, newArray, i, 
+                            array.length - i - 1);
                     array = newArray;
                 } else {
                     array[i].setCount(array[i].getCount() - 1);

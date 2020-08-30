@@ -293,7 +293,7 @@ public class TimeTester {
 				endTime = System.nanoTime();
 				System.out.println();
 				System.out.println("time taken = " 
-						+ ((double) (endTime - startTime)) / Math.pow(10, 6) + " ms");
+						+ ((double) (endTime - startTime)) / Math.pow(10, 9) + " s");
 			} else {
 				printErrorMsg("Unknown command.");
 			}
