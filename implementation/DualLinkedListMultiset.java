@@ -41,9 +41,6 @@ public class DualLinkedListMultiset extends RmitMultiset
         Node currNodeTwo;
         boolean createNewItem = true;
 
-        // First check if the item already exists
-        // and if so, increment the instance count
-        
         /** Linked list one */
         currNodeOne = headOne;
 
@@ -224,6 +221,7 @@ listTwo: {
             currNodeTwo = currNodeTwo.getNextNode();
         }
 
+        // Remove current node when instances are zero
         if (currNodeTwo.getInstances() == 0) {
             if (currNodeTwo == headTwo) {
                 headTwo = currNodeTwo.getNextNode();
